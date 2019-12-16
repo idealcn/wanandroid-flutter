@@ -20,8 +20,20 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        tabBarTheme: TabBarTheme(
+          indicator: UnderlineTabIndicator(),
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.white,
+          labelStyle: TextStyle(
+            color: Colors.red,
+          ),
+          unselectedLabelStyle: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
-      home: MyHomePage(title: 'wanandroid-flutter'),
+      home: MyHomePage(title: '头条新闻'),
     );
   }
 }
@@ -44,18 +56,37 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  List tabs = [
+    "国内",
+    "时政",
+    "军事",
+    "科技",
+    "数码",
+    "社会",
+    "民生",
+    "欧洲",
+    "美国",
+    "加拿大",
+    "南美洲",
+    "东南亚"
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController = TabController(vsync: this, length: tabs.length);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -70,43 +101,39 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+        title: Center(
+          child: Text(widget.title),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: tabs.map((e) => Tab(text: e)).toList(),
+          isScrollable: true,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: TabBarView(
+        controller: _tabController,
+        children: tabs.map((e) {
+          //下划线widget预定义以供复用。
+          Widget divider1 = Divider(
+            color: Colors.blue,
+          );
+          Widget divider2 = Divider(color: Colors.green);
+          return ListView.separated(
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(e + '-----$index'),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return index % 2 == 0 ? divider1 : divider2;
+              },
+              itemCount: 30);
+//          return Container(
+//            alignment: Alignment.center,
+//            child: Text(e, textScaleFactor: 5),
+//          );
+        }).toList(),
+      ),
     );
   }
 }
