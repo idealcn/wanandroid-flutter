@@ -110,6 +110,22 @@ class _MyHomePageState extends State<MyHomePage>
           isScrollable: true,
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text("Home")
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business_center),
+            title: Text("Business")
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            title: Text("Settings")
+          ),
+        ],
+      ),
       body: TabBarView(
         controller: _tabController,
         children: tabs.map((e) {
